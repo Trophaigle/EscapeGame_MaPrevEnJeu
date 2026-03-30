@@ -4,19 +4,17 @@ import { useRef, useState } from "react";
 import CategoryCard from "./components/CategoryCard";
 import ThreeJSChest from "./components/ThreeJSChest";
 import ActorsGame from "./components/games/ActorsGame";
+import RiddleGame from "./components/games/RiddleGame";
+import RiskFamiliesGame from "./components/games/RiskFamiliesGame";
 
 export default function Home() {
   const [unlocked, setUnlocked] = useState([true, false, false, false, false]);
   const [newCardIndex, setNewCardIndex] = useState<number | null>(0); //0 pour avoir l'anim meme à la premiere card
 
-  // const [showChest, setShowChest] = useState(false);
-  // const handleChestAnimationEnd = () => {
-  //   setShowChest(false);
-  //   const newUnlocked = [...unlocked];
-  //   newUnlocked[2] = true; // débloque la catégorie 3
-  //   setUnlocked(newUnlocked);
-  //   setNewCardIndex(2);
-  // }
+  const [showChest, setShowChest] = useState(false);
+  const handleChestAnimationEnd = () => {
+    setShowChest(false);
+  }
 
   const handleValidate = (
     index: number, 
@@ -39,12 +37,13 @@ export default function Home() {
   };
 
   const actorsRef = useRef<any>(null); // pour pouvoir appeler la validation du jeu des acteurs depuis la page principale
+  const riddleRef = useRef<any>(null);
 
   const categories = [
   {
     title: 'Mission 1 : Les héros de la prévention 🦸‍♂️',
     subtitle: 'Repérez tous les acteurs de la prévention des risques professionnels et associez-les à leurs rôles et missions ! »',
-    component: <ActorsGame refObj={actorsRef}/>,
+    component: <ActorsGame refObj={actorsRef}/> ,
     onValidate: () => {
       const isValid = actorsRef.current?.validateAll?.();
       if (isValid) {
@@ -57,17 +56,25 @@ export default function Home() {
   },
   {
     title: 'Mission 2 : L’énigme mystère 🔍',
-    subtitle: 'Pour avancer, combinez vos indices : \nComptez le nombre total d’acteurs que vous avez identifiés. \nAjoutez le nombre de lettres du mot mystère trouvé lors d’une autre activité. \nRésolvez l’énigme et débloquez le niveau suivant !',
-    // onValidateCustom: () => {
-    //   console.log('Déclenche l’animation du coffre 3D !');
-    //   // Déclencher ton animation Three.js
-    //   setShowChest(true);
-    //   return true; //bloque la suite
-    // }
+    subtitle: "Pour avancer, résolvez l'énigme : additionnez le nombre total d’acteurs identifiés et le nombre de lettres du mot mystère.",
+    component: <RiddleGame targetNumber={20} refObj={riddleRef}/>,
+    onValidate: () => {
+      const isValid = riddleRef.current?.validate?.();
+      if (!isValid) {
+        alert("Ce n'est pas la bonne réponse ❌");
+        return false; // validation échouée, bloque la suite
+      } 
+      //if correct
+      alert("Bravo ! L'énigme est résolue ✅");
+      // jouer l'animation du coffre si tu as un ref vers le ThreeJSChest
+      setShowChest(true);
+      return true; // validation réussie, continue vers la suite
+    }
   },
   {
     title: 'Mission 3 : Le coffre aux trésors des risques 🗝️',
-    subtitle: 'Bravo !\n Vous venez de débloquer les 20 familles de risques professionnels. \n Chaque famille est un nouveau défi à explorer !'
+    subtitle: 'Bravo !\n Vous venez de débloquer les 20 familles de risques professionnels. \n Chaque famille est un nouveau défi à explorer !',
+    component: <RiskFamiliesGame />
   },
   {
     title: 'Mission 4 : Détective du risque 🔎',
@@ -100,13 +107,13 @@ export default function Home() {
       ))}
     
       {/* OVERLAY AU-DESSUS DE TOUT */}
-    {/* {showChest && (
+     {showChest && (
       <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-[9999]">
         <div className="w-[400px] h-[400px]">
           <ThreeJSChest onAnimationEnd={handleChestAnimationEnd} />
         </div>
       </div>
-    )} */}
+    )} 
     </div>
   );
 }
