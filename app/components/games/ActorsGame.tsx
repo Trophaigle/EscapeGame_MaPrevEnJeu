@@ -1,13 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
 import actors from "@/data/actors.json"; // Assurez-vous que ce chemin est correct et que le fichier JSON est bien structuré
-import { reference } from 'three/tsl';
-
-type Actor = {
-    id: string;
-    name: string;
-    mission: string;
-};
 
 type ActorsGameProps = {
     refObj?: React.RefObject<any>; // pour permettre de référencer ce composant depuis l’extérieur si besoin

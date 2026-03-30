@@ -1,4 +1,3 @@
-import { i } from 'framer-motion/client';
 import React, { useState } from 'react'
 import { families } from '@/data/family';
 
