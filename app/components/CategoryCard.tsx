@@ -6,9 +6,10 @@ type CategoryCardProps = {
   subtitle: string;
   onValidate: () => void;
   isNew?: boolean; // pour déclencher animation à l'apparition
+  children?: React.ReactNode; // pour permettre d'ajouter des éléments personnalisés à l'intérieur de la carte
 };
 
-const CategoryCard = ({title, subtitle ,onValidate, isNew} : CategoryCardProps) => {
+const CategoryCard = ({title, subtitle ,onValidate, isNew, children} : CategoryCardProps) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [visible, setVisible] = useState(isNew ? false : true);
 
@@ -33,6 +34,12 @@ const CategoryCard = ({title, subtitle ,onValidate, isNew} : CategoryCardProps) 
     >
       <h2 className="text-3xl font-bold">{title}</h2>
       <h3 className="text-lg text-gray-300 text-center whitespace-pre-line">{subtitle}</h3>
+
+      {/* Le contenu dynamique */}
+      <div className="w-full flex justify-center">
+        {children}
+      </div>
+
       <button
         className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-lg font-semibold transition-colors"
         onClick={onValidate}

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "drh",
+    "name": "DRH",
+    "mission": "Gérer les ressources humaines"
+  },
+  {
+    "id": "manager",
+    "name": "Manager",
+    "mission": "Gérer l'équipe et les projets"
+  }
+]

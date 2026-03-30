@@ -1,35 +1,35 @@
 "use client"
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CategoryCard from "./components/CategoryCard";
 import ThreeJSChest from "./components/ThreeJSChest";
+import ActorsGame from "./components/games/ActorsGame";
 
 export default function Home() {
   const [unlocked, setUnlocked] = useState([true, false, false, false, false]);
   const [newCardIndex, setNewCardIndex] = useState<number | null>(0); //0 pour avoir l'anim meme à la premiere card
 
-  const [showChest, setShowChest] = useState(false);
-  const handleChestAnimationEnd = () => {
-    setShowChest(false);
-    const newUnlocked = [...unlocked];
-    newUnlocked[2] = true; // débloque la catégorie 3
-    setUnlocked(newUnlocked);
-    setNewCardIndex(2);
-  }
+  // const [showChest, setShowChest] = useState(false);
+  // const handleChestAnimationEnd = () => {
+  //   setShowChest(false);
+  //   const newUnlocked = [...unlocked];
+  //   newUnlocked[2] = true; // débloque la catégorie 3
+  //   setUnlocked(newUnlocked);
+  //   setNewCardIndex(2);
+  // }
 
   const handleValidate = (
     index: number, 
-    onValidateCustom?: () => boolean | void
+    onValidate?: () => boolean | void
   ) => {
      // Si une action personnalisée est définie, on l'exécute
-    if (onValidateCustom) {
-      const shouldBlock = onValidateCustom();
+    if (onValidate) {
+      const isValid = onValidate(); // onValidate doit retourner true ou false
 
-      //bloque
-      if(shouldBlock) return;
+      if(!isValid) return; // si validation échoue, on bloque la suite et n'affiche pas la nouvelle carte
     }
 
-    // Débloquer la carte suivante
+    // Débloquer la carte suivante si tout est OK
     const newUnlocked = [...unlocked]; //copie tableau, necessaire pour que React détecte chgt et déclenche re-render.
     if (index + 1 < unlocked.length) { //verification limite
       newUnlocked[index + 1] = true; // débloque la catégorie suivante, React re-render la page avec la nouvelle version de unlocked
@@ -38,20 +38,32 @@ export default function Home() {
     setUnlocked(newUnlocked);
   };
 
+  const actorsRef = useRef<any>(null); // pour pouvoir appeler la validation du jeu des acteurs depuis la page principale
+
   const categories = [
   {
     title: 'Mission 1 : Les héros de la prévention 🦸‍♂️',
-    subtitle: 'Repérez tous les acteurs de la prévention des risques professionnels et associez-les à leurs rôles et missions ! »'
+    subtitle: 'Repérez tous les acteurs de la prévention des risques professionnels et associez-les à leurs rôles et missions ! »',
+    component: <ActorsGame refObj={actorsRef}/>,
+    onValidate: () => {
+      const isValid = actorsRef.current?.validateAll?.();
+      if (isValid) {
+        alert("Bravo ! Tous les acteurs sont correctement placés ✅");
+      } else {
+        alert("Il y a encore des erreurs ❌");
+      }
+      return isValid; // retourne true ou false
+    }
   },
   {
     title: 'Mission 2 : L’énigme mystère 🔍',
     subtitle: 'Pour avancer, combinez vos indices : \nComptez le nombre total d’acteurs que vous avez identifiés. \nAjoutez le nombre de lettres du mot mystère trouvé lors d’une autre activité. \nRésolvez l’énigme et débloquez le niveau suivant !',
-    onValidateCustom: () => {
-      console.log('Déclenche l’animation du coffre 3D !');
-      // Déclencher ton animation Three.js
-      setShowChest(true);
-      return true; //bloque la suite
-    }
+    // onValidateCustom: () => {
+    //   console.log('Déclenche l’animation du coffre 3D !');
+    //   // Déclencher ton animation Three.js
+    //   setShowChest(true);
+    //   return true; //bloque la suite
+    // }
   },
   {
     title: 'Mission 3 : Le coffre aux trésors des risques 🗝️',
@@ -79,20 +91,22 @@ export default function Home() {
             key={i} //clé unique pour React afin qu’il sache quel élément a changé lors du re-render.
             title={cat.title}
             subtitle={cat.subtitle}
-            onValidate={() => handleValidate(i, cat.onValidateCustom)}
+            onValidate={() => handleValidate(i, cat.onValidate)} //on transmet la fonction de validation personnalisée si elle existe
             isNew={i == newCardIndex}
-           />
+           >
+            {cat.component}
+          </CategoryCard>
         )
       ))}
     
       {/* OVERLAY AU-DESSUS DE TOUT */}
-    {showChest && (
+    {/* {showChest && (
       <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-[9999]">
         <div className="w-[400px] h-[400px]">
           <ThreeJSChest onAnimationEnd={handleChestAnimationEnd} />
         </div>
       </div>
-    )}
+    )} */}
     </div>
   );
 }
