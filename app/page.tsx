@@ -1,65 +1,98 @@
+"use client"
 import Image from "next/image";
+import { useState } from "react";
+import CategoryCard from "./components/CategoryCard";
+import ThreeJSChest from "./components/ThreeJSChest";
 
 export default function Home() {
+  const [unlocked, setUnlocked] = useState([true, false, false, false, false]);
+  const [newCardIndex, setNewCardIndex] = useState<number | null>(0); //0 pour avoir l'anim meme à la premiere card
+
+  const [showChest, setShowChest] = useState(false);
+  const handleChestAnimationEnd = () => {
+    setShowChest(false);
+    const newUnlocked = [...unlocked];
+    newUnlocked[2] = true; // débloque la catégorie 3
+    setUnlocked(newUnlocked);
+    setNewCardIndex(2);
+  }
+
+  const handleValidate = (
+    index: number, 
+    onValidateCustom?: () => boolean | void
+  ) => {
+     // Si une action personnalisée est définie, on l'exécute
+    if (onValidateCustom) {
+      const shouldBlock = onValidateCustom();
+
+      //bloque
+      if(shouldBlock) return;
+    }
+
+    // Débloquer la carte suivante
+    const newUnlocked = [...unlocked]; //copie tableau, necessaire pour que React détecte chgt et déclenche re-render.
+    if (index + 1 < unlocked.length) { //verification limite
+      newUnlocked[index + 1] = true; // débloque la catégorie suivante, React re-render la page avec la nouvelle version de unlocked
+      setNewCardIndex(index + 1); // pour l'animation de la nouvelle carte, la nouvelle carte devient “nouvelle”
+    }
+    setUnlocked(newUnlocked);
+  };
+
+  const categories = [
+  {
+    title: 'Mission 1 : Les héros de la prévention 🦸‍♂️',
+    subtitle: 'Repérez tous les acteurs de la prévention des risques professionnels et associez-les à leurs rôles et missions ! »'
+  },
+  {
+    title: 'Mission 2 : L’énigme mystère 🔍',
+    subtitle: 'Pour avancer, combinez vos indices : \nComptez le nombre total d’acteurs que vous avez identifiés. \nAjoutez le nombre de lettres du mot mystère trouvé lors d’une autre activité. \nRésolvez l’énigme et débloquez le niveau suivant !',
+    onValidateCustom: () => {
+      console.log('Déclenche l’animation du coffre 3D !');
+      // Déclencher ton animation Three.js
+      setShowChest(true);
+      return true; //bloque la suite
+    }
+  },
+  {
+    title: 'Mission 3 : Le coffre aux trésors des risques 🗝️',
+    subtitle: 'Bravo !\n Vous venez de débloquer les 20 familles de risques professionnels. \n Chaque famille est un nouveau défi à explorer !'
+  },
+  {
+    title: 'Mission 4 : Détective du risque 🔎',
+    subtitle: "Observez cette scène de travail (par exemple dans un restaurant).\n Votre mission (si vous l'acceptez): associer chaque personne au risque principal auquel elle est exposée.\n Saurez-vous repérer tous les dangers avant que quelque chose n’arrive ?"
+  },
+  {
+    title: 'Mission 5 : Maîtrisez les risques ⚡',
+    subtitle: 'Votre objectif final : protéger vos collègues ! Réfléchissez aux mesures à mettre en place pour éviter les blessures : \nSupprimez le danger ou réduisez le risque à la source\nOu protégez les personnes exposées.\nVous êtes maintenant un vrai expert de la sécurité au travail ! »'
+  }
+];
+  
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    /* Si unlocked[i] est true → on affiche le <div>
+    Si unlocked[i] est false → on ne rend rien pour cette catégorie*/
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex flex-col items-center pt-20 pb-20 space-y-10">
+      
+      {categories.map((cat, i) => (
+        unlocked[i] && (
+          <CategoryCard 
+            key={i} //clé unique pour React afin qu’il sache quel élément a changé lors du re-render.
+            title={cat.title}
+            subtitle={cat.subtitle}
+            onValidate={() => handleValidate(i, cat.onValidateCustom)}
+            isNew={i == newCardIndex}
+           />
+        )
+      ))}
+    
+      {/* OVERLAY AU-DESSUS DE TOUT */}
+    {showChest && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-[9999]">
+        <div className="w-[400px] h-[400px]">
+          <ThreeJSChest onAnimationEnd={handleChestAnimationEnd} />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
+    )}
     </div>
   );
 }
