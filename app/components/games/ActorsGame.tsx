@@ -74,8 +74,11 @@ const ActorsGame = ({ refObj }: ActorsGameProps) => {
                 ${matchedActor ? (isCorrect ? "bg-green-500" : "bg-red-500") : "bg-gray-700 text-white"}`}
             >
               {matchedActor
-                ? actors.find(a => a.id === matchedActor)?.name
-                : actor.mission}
+                ? isCorrect
+                  ? actors.find(a => a.id === matchedActor)?.name //green= good answer
+                  : actor.mission //red= wrong answer, remettre le texte original de la mission
+                : actor.mission // case vide = montrer la mission
+                }
             </div>
           );
         })}

@@ -7,6 +7,7 @@ import ActorsGame from "./components/games/ActorsGame";
 import RiddleGame from "./components/games/RiddleGame";
 import RiskFamiliesGame from "./components/games/RiskFamiliesGame";
 import WorkingPlaceRisks from "./components/games/WorkingPlaceRisks";
+import MysterySentence from "./components/games/MysterySentence";
 
 export default function Home() {
   const [unlocked, setUnlocked] = useState([true, false, false, false, false]);
@@ -84,7 +85,8 @@ export default function Home() {
   },
   {
     title: 'Mission 5 : Maîtrisez les risques ⚡',
-    subtitle: 'Votre objectif final : protéger vos collègues ! Réfléchissez aux mesures à mettre en place pour éviter les blessures : \nSupprimez le danger ou réduisez le risque à la source\nOu protégez les personnes exposées.\nVous êtes maintenant un vrai expert de la sécurité au travail ! »'
+    subtitle: 'Votre objectif final : protéger vos collègues ! Réfléchissez aux mesures à mettre en place pour éviter les blessures : \nSupprimez le danger ou réduisez le risque à la source\nOu protégez les personnes exposées.\nVous êtes maintenant un vrai expert de la sécurité au travail ! »',
+    component: <MysterySentence />
   }
 ];
   

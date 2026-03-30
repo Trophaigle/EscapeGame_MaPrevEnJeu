@@ -8,5 +8,15 @@
     "id": "manager",
     "name": "Manager",
     "mission": "Gérer l'équipe et les projets"
-  }
+  },
+  {
+      "id": "medecin_travail",
+      "name": "Médecin du Travail",
+      "mission": "Surveiller la santé des salariés et conseiller sur la prévention des risques"
+    },
+  {
+    "id": "cse",
+    "name": "Membre du CSE",
+    "mission": "Représenter les salariés et veiller aux conditions de travail"
+}
 ]
