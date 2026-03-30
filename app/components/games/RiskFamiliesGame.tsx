@@ -1,4 +1,6 @@
+import { i } from 'framer-motion/client';
 import React, { useState } from 'react'
+import { families } from '@/data/family';
 
 const RiskFamiliesGame = () => {
     const [revealed, setRevealed] = useState<number[]>([]);
@@ -9,14 +11,8 @@ const RiskFamiliesGame = () => {
          setRevealed(prev => [...prev, index]);
        }
      };
-     //icons https://icones8.fr/icons/set/fall
-     const families = [
-      { id: "chemicals", name: "Produits chimiques", icon: "/images/chemical.png" },
-      { id: "fire", name: "Incendie", icon: "/images/fire.png" },
-      { id: "electrical", name: "Électricité", icon: "/images/electrical.png" },
-      { id: "fall", name: "Chutes", icon: "/images/fall.png" },
-      // ajouter les 20 familles...
-    ];
+     
+
 
     return (
     <div className="grid grid-cols-4 gap-4 justify-center">

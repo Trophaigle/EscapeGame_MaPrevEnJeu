@@ -6,6 +6,7 @@ import ThreeJSChest from "./components/ThreeJSChest";
 import ActorsGame from "./components/games/ActorsGame";
 import RiddleGame from "./components/games/RiddleGame";
 import RiskFamiliesGame from "./components/games/RiskFamiliesGame";
+import WorkingPlaceRisks from "./components/games/WorkingPlaceRisks";
 
 export default function Home() {
   const [unlocked, setUnlocked] = useState([true, false, false, false, false]);
@@ -78,7 +79,8 @@ export default function Home() {
   },
   {
     title: 'Mission 4 : Détective du risque 🔎',
-    subtitle: "Observez cette scène de travail (par exemple dans un restaurant).\n Votre mission (si vous l'acceptez): associer chaque personne au risque principal auquel elle est exposée.\n Saurez-vous repérer tous les dangers avant que quelque chose n’arrive ?"
+    subtitle: "Observez cette scène de travail (par exemple dans un restaurant).\n Votre mission (si vous l'acceptez): associer chaque personne au risque principal auquel elle est exposée.\n Saurez-vous repérer tous les dangers avant que quelque chose n’arrive ?",
+    component: <WorkingPlaceRisks />
   },
   {
     title: 'Mission 5 : Maîtrisez les risques ⚡',
