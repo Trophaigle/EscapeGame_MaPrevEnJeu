@@ -8,15 +8,15 @@ const WorkingPlaceRisks = () => {
         {/* IMAGE DE LA SCÈNE */}
         <div className="w-full h-[400px] relative mb-8">
           <img
-            src="/images/scene-travail.jpg" // remplace par ton image
+            src="/images/IAImageWorkPlaceHazards.png" // remplace par ton image
             alt="Scène de travail"
-            className="w-full h-full object-cover rounded-xl shadow-lg"
+            className="w-full h-full object-contain rounded-xl shadow-lg"
           />
 
           {/* Zones interactives (pour repérer positions) */}
-          <div className="absolute top-20 left-24 w-16 h-16 border-2 border-red-500 rounded-full" />
+          {/* <div className="absolute top-20 left-24 w-16 h-16 border-2 border-red-500 rounded-full" />
           <div className="absolute top-60 left-72 w-16 h-16 border-2 border-blue-500 rounded-full" />
-          <div className="absolute top-40 left-48 w-16 h-16 border-2 border-green-500 rounded-full" />
+          <div className="absolute top-40 left-48 w-16 h-16 border-2 border-green-500 rounded-full" /> */}
         </div>
 
         {/* PICTOGRAMMES / zones à drag & drop (en bas) */}

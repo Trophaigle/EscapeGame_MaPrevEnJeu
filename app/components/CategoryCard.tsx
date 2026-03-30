@@ -24,16 +24,26 @@ const CategoryCard = ({title, subtitle ,onValidate, isNew, children} : CategoryC
     <div
       ref={cardRef}
       className={`
-        w-[95%] h-[90vh] 
-        bg-gray-800 text-white 
-        rounded-3xl shadow-2xl 
-        flex flex-col items-center justify-center space-y-6
-        transform transition-all duration-700
-        ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+         w-[95%] 
+    min-h-[90dvh] md:h-[90vh]
+
+    bg-gray-800 text-white 
+    rounded-2xl md:rounded-3xl shadow-2xl 
+
+    flex flex-col items-center
+    justify-center md:justify-center
+
+    px-4 py-5 md:px-8 md:py-6
+    space-y-4 md:space-y-6
+
+    overflow-y-auto
+
+    transform transition-all duration-700
+    ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
       `}
     >
-      <h2 className="text-3xl font-bold">{title}</h2>
-      <h3 className="text-lg text-gray-300 text-center whitespace-pre-line">{subtitle}</h3>
+      <h2 className="text-xl md:text-3xl font-bold text-center">{title}</h2>
+      <h3 className="text-sm md:text-lg text-gray-300 text-center whitespace-pre-line">{subtitle}</h3>
 
       {/* Le contenu dynamique */}
       <div className="w-full flex justify-center">

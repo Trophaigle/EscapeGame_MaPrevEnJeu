@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
 
 type ChestProps = {
   onAnimationEnd?: () => void;
@@ -47,13 +48,37 @@ export default function ThreeJSChest({ onAnimationEnd }: ChestProps) {
     scene.add(ambientLight);
 
     // COFFRE (cube pour l’instant)
-    const geometry = new THREE.BoxGeometry(2, 1, 1);
+    /*const geometry = new THREE.BoxGeometry(2, 1, 1);
     const material = new THREE.MeshStandardMaterial({ color: 0xffaa00 });
     const chest = new THREE.Mesh(geometry, material);
 
     chest.rotation.set(0, -Math.PI / 4, 0); // rotation initiale de 45° autour de l’axe Y
     
-    scene.add(chest);
+    scene.add(chest);*/
+    const loader = new GLTFLoader();
+
+    let chest: THREE.Object3D;
+
+    loader.load('/models/x-fantasy-treasure-chest/source/chest.glb', (gltf) => {
+      chest = gltf.scene;
+    
+      chest.scale.set(2, 2, 2);
+      chest.position.set(0, -1, 0);
+      chest.rotation.set(0, -Math.PI / 4, 0);
+    
+      // Ombres (optionnel mais stylé)
+      chest.traverse((child: any) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+          child.material = new THREE.MeshStandardMaterial({
+      map: child.material.map, // garde la texture
+    });
+        }
+      });
+    
+      scene.add(chest);
+    });
 
     // ANIMATION
     let elapsed = 0;
@@ -63,12 +88,14 @@ export default function ThreeJSChest({ onAnimationEnd }: ChestProps) {
       requestAnimationFrame(animate);
 
       // rotation
-      chest.rotation.y += 0.003;
+      if(chest) {
+        chest.rotation.y += 0.003;
+      }
 
       // timer
       elapsed += 0.016; // approx 60fps
 
-      if (elapsed >= duration) {
+      if (elapsed >= duration && chest) {
         // disparition
         scene.remove(chest);
 
