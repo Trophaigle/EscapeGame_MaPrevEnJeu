@@ -1,6 +1,5 @@
 "use client";
 
-import { i } from "framer-motion/client";
 import { useState } from "react";
 
 type LetterCell = {
@@ -26,7 +25,7 @@ export default function LetterGrid({ size, refObj }: LetterGridProps) {
           return newCells;
         });
       };
-  
+
       // fonction pour cacher une lettre
       const hideLetter = (index: number) => {
         setCells((prev) => {
