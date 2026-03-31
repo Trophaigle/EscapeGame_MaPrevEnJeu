@@ -28,7 +28,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="bg-white shadow-lg rounded-xl w-full max-w-md p-8">
         <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          Connexion
+          Connexion (user : user, password : password)
         </h1>
 
       
