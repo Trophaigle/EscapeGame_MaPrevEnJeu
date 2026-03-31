@@ -10,7 +10,9 @@ import RiddleGame from '../components/games/RiddleGame';
 import ActorsGame from '../components/games/ActorsGame';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 
+const ActorsGameNoSSR = dynamic(() => import("../components/games/ActorsGame"), { ssr: false });
 
 export default function GameClient() {
 
@@ -49,7 +51,7 @@ export default function GameClient() {
   {
     title: 'Mission 1 : Les héros de la prévention 🦸‍♂️',
     subtitle: 'Repérez tous les acteurs de la prévention des risques professionnels et associez-les à leurs rôles et missions ! »',
-    component: <ActorsGame refObj={actorsRef}/> ,
+    component: <ActorsGameNoSSR refObj={actorsRef} />, // ✅ client-only
     onValidate: () => {
       const isValid = actorsRef.current?.validateAll?.();
       if (isValid) {

@@ -5,10 +5,11 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 
 type ChestProps = {
+  duration?: number; // durée totale avant disparition (en secondes)
   onAnimationEnd?: () => void;
 };
 
-export default function ThreeJSChest({ onAnimationEnd }: ChestProps) {
+export default function ThreeJSChest({ duration = 10,onAnimationEnd }: ChestProps) {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export default function ThreeJSChest({ onAnimationEnd }: ChestProps) {
 
     // CAMERA
     const camera = new THREE.PerspectiveCamera(
-      75,
+      100,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
       1000
@@ -31,94 +32,103 @@ export default function ThreeJSChest({ onAnimationEnd }: ChestProps) {
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(
-      mountRef.current.clientWidth,
-      mountRef.current.clientHeight
-    );
-
+      renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
+      renderer.shadowMap.enabled = true; // ✅ nécessaire pour les ombres
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap; // plus joli
 
     mountRef.current.appendChild(renderer.domElement);
 
     // LUMIÈRE
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(5, 5, 5);
-    scene.add(light);
+    // Lumière directionnelle principale
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 3); // plus lumineux
+    directionalLight.position.set(5, 10, 5);
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    // Lumière ambiante
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1); // un peu plus fort
     scene.add(ambientLight);
 
-    // COFFRE (cube pour l’instant)
-    /*const geometry = new THREE.BoxGeometry(2, 1, 1);
-    const material = new THREE.MeshStandardMaterial({ color: 0xffaa00 });
-    const chest = new THREE.Mesh(geometry, material);
+    // Lumière secondaire pour “remplir” les ombres
+    const fillLight = new THREE.PointLight(0xffffff, 1);
+    fillLight.position.set(-5, 5, 5);
+    scene.add(fillLight);
 
-    chest.rotation.set(0, -Math.PI / 4, 0); // rotation initiale de 45° autour de l’axe Y
-    
-    scene.add(chest);*/
+    const rimLight = new THREE.SpotLight(0xffffff, 1);
+    rimLight.position.set(0, 5, -5);
+    scene.add(rimLight);
+
     const loader = new GLTFLoader();
 
-    let chest: THREE.Object3D;
+    let mixer: THREE.AnimationMixer;
+    let chestGroup = new THREE.Group();
+    scene.add(chestGroup);
 
-    loader.load('/models/x-fantasy-treasure-chest/source/chest.glb', (gltf) => {
-      chest = gltf.scene;
+    const clock = new THREE.Clock();
+    let elapsedTime = 0; // pour la durée totale
+
+    loader.load('/models/chest_animation.glb', (gltf) => {
+      const chest = gltf.scene;
     
       chest.scale.set(2, 2, 2);
-      chest.position.set(0, -1, 0);
-      chest.rotation.set(0, -Math.PI / 4, 0);
+      chest.position.set(0, -2, 0);
+      chest.rotation.set(0, -Math.PI / 2, 0);
     
       // Ombres (optionnel mais stylé)
       chest.traverse((child: any) => {
         if (child.isMesh) {
           child.castShadow = true;
           child.receiveShadow = true;
+          
           child.material = new THREE.MeshStandardMaterial({
-      map: child.material.map, // garde la texture
-    });
+            map: child.material.map, // garde la texture
+            metalness: 0.5, // un peu de métal pour le coffre
+            roughness: 0.7, // pas trop lisse
+          });
         }
       });
     
-      scene.add(chest);
+      chestGroup.add(chest);
+
+      // Animations
+      if (gltf.animations && gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(chest);
+        const action = mixer.clipAction(gltf.animations[1]);
+        action.loop = THREE.LoopOnce; // jouer une seule fois
+        action.clampWhenFinished = true; // reste à la fin
+        action.play();
+      }
     });
 
-    // ANIMATION
-    let elapsed = 0;
-    const duration = 10; // secondes
-
     function animate() {
-      requestAnimationFrame(animate);
+       requestAnimationFrame(animate);
 
-      // rotation
-      if(chest) {
-        chest.rotation.y += 0.003;
-      }
+      const delta = clock.getDelta();
+      elapsedTime += delta;
 
-      // timer
-      elapsed += 0.016; // approx 60fps
+      // rotation continue du coffre
+      chestGroup.rotation.y += 0.003;
 
-      if (elapsed >= duration && chest) {
-        // disparition
-        scene.remove(chest);
-
-        // callback
-        onAnimationEnd?.();
-
-        return; // stop animation
-      }
+      // mise à jour du mixer (animation du coffre)
+      if (mixer) mixer.update(delta);
 
       renderer.render(scene, camera);
+
+      // disparition à la fin de la durée
+      if (elapsedTime >= duration) {
+        scene.remove(chestGroup);
+        onAnimationEnd?.();
+      }
     }
 
     animate();
 
-    // CLEANUP (IMPORTANT en React)
+     // === Cleanup ===
     return () => {
       renderer.dispose();
-
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
-      }
+      if (mountRef.current && renderer.domElement) mountRef.current.removeChild(renderer.domElement);
     };
-  }, []);
+  }, [duration, onAnimationEnd]);
 
-  return <div ref={mountRef} className="w-full h-[400px]" />;
+  return <div ref={mountRef} className="w-full h-[400px] overflow-visible" />;
 }
