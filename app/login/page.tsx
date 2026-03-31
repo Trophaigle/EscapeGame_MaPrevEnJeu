@@ -25,23 +25,44 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "50px" }}>
-      <h1>Login Form</h1>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      <div className="bg-white shadow-lg rounded-xl w-full max-w-md p-8">
+        <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
+          Connexion
+        </h1>
+
       
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        <input
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Login</button>
-      </form>
+
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4"
+        >
+          <input
+            type="text"
+            placeholder="Nom d'utilisateur"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="border text-black border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Mot de passe"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border text-black border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors"
+          >
+            Se connecter
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

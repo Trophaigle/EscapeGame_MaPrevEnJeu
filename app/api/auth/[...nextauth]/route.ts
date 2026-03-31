@@ -9,10 +9,10 @@ export const authOptions = {
       async authorize(credentials) {
         // 👇 simple username/password
         if (
-          credentials?.username === "client" &&
+          credentials?.username === "user" &&
           credentials?.password === "password"
         ) {
-          return { id: "1", name: "client" };
+          return { id: "1", name: "user" };
         }
         return null; // login échoué
       },
@@ -20,6 +20,7 @@ export const authOptions = {
   ],
   pages: { signIn: "/login" }, // page de login personnalisée
   secret: process.env.NEXTAUTH_SECRET, // obligatoire
+  
 };
 
 const handler = NextAuth(authOptions);

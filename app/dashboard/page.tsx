@@ -23,17 +23,17 @@ export default async function DashboardPage() {
 
       {/* Règles / Instructions */}
       <section className="w-full max-w-3xl bg-white shadow-md rounded-lg p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-3">Règles du jeu</h2>
+        <h2 className="text-xl text-black font-semibold mb-3">Règles du jeu</h2>
         <p className="text-gray-700">
           Les joueurs vont passer à travers différents modules et devront
-          accomplir diverses missions pour progresser.
+          accomplir diverses missions pour terminer l'escape game. Chaque module représente un thème de prévention des risques, et les missions sont conçues pour être à la fois éducatives et ludique.
           {/* Tu pourras compléter ici */}
         </p>
       </section>
 
       {/* Score / progression */}
       <section className="w-full max-w-3xl bg-white shadow-md rounded-lg p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-3">Votre progression</h2>
+        <h2 className="text-xl text-black font-semibold mb-3">Votre progression</h2>
         <p className="text-gray-700">
           Score précédent : 0 {/* placeholder, tu pourras compléter plus tard */}
         </p>
