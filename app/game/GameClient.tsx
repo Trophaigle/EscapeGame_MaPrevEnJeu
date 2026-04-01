@@ -1,20 +1,19 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import CategoryCard from '../components/CategoryCard';
 import ThreeJSChest from '../components/ThreeJSChest';
 import MysterySentence from '../components/games/MysterySentence';
 import WorkingPlaceRisks from '../components/games/WorkingPlaceRisks';
 import RiskFamiliesGame from '../components/games/RiskFamiliesGame';
 import RiddleGame from '../components/games/RiddleGame';
-import ActorsGame from '../components/games/ActorsGame';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import { useRouter } from "next/navigation";
 import dynamic from 'next/dynamic';
 
 const ActorsGameNoSSR = dynamic(() => import("../components/games/ActorsGame"), { ssr: false });
 
 export default function GameClient() {
+  const router = useRouter();
 
   const [unlocked, setUnlocked] = useState([true, false, false, false, false]);
   const [newCardIndex, setNewCardIndex] = useState<number | null>(0); //0 pour avoir l'anim meme à la premiere card
@@ -34,6 +33,21 @@ export default function GameClient() {
 
       if(!isValid) return; // si validation échoue, on bloque la suite et n'affiche pas la nouvelle carte
     }
+
+    // Vérifier si c’est la dernière carte
+  const isLastCard = index === unlocked.length - 1;
+
+  if (isLastCard) {
+    // Redirection vers le dashboard
+    alert("🎉 Bravo ! Vous avez terminé l'Escape Game !");
+    if(router == null) {
+      alert("Router null, impossible de rediriger vers le dashboard");
+    } else {
+       router.push("/dashboard"); // ← redirige vers la page dashboard
+    }
+    
+    return; // stoppe ici
+  }
 
     // Débloquer la carte suivante si tout est OK
     const newUnlocked = [...unlocked]; //copie tableau, necessaire pour que React détecte chgt et déclenche re-render.
@@ -92,7 +106,12 @@ export default function GameClient() {
   {
     title: 'Mission 5 : Maîtrisez les risques ⚡',
     subtitle: 'Votre objectif final : protéger vos collègues ! Réfléchissez aux mesures à mettre en place pour éviter les blessures : \nSupprimez le danger ou réduisez le risque à la source\nOu protégez les personnes exposées.\nVous êtes maintenant un vrai expert de la sécurité au travail ! »',
-    component: <MysterySentence />
+    component: <MysterySentence />,
+    onValidate: () => {
+      const isValid = true; // mettre la vraie logique de validation
+      alert(isValid ? "✅ Mission validée !" : "❌ Erreur");
+      return isValid;
+    }
   }
 ];
   
