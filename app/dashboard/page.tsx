@@ -26,7 +26,7 @@ export default async function DashboardPage() {
     <h2 className="text-xl text-black font-semibold mb-3">Règles du jeu</h2>
     <p className="text-gray-700">
       Les joueurs vont passer à travers différents modules et devront
-      accomplir diverses missions pour terminer l'escape game. Chaque module représente un thème de prévention des risques, et les missions sont conçues pour être à la fois éducatives et ludiques.
+      accomplir diverses missions pour terminer l'escape game.
       <br />
       Essayez de résoudre chaque mission correctement pour débloquer la suite !
     </p>
