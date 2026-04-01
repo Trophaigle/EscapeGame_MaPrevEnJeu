@@ -81,8 +81,6 @@ export default function EndScreen() {
 
       if(mixer) mixer.update(delta);
 
-   
-
       renderer.render(scene, camera);
     };
 
@@ -111,7 +109,7 @@ export default function EndScreen() {
 
         {/* 📝 Texte overlay */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 pointer-events-none bg-black/30 backdrop-blur-[3px]">
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="text-4xl font-bold mb-4 text-center">
             🎉 Escape Game Terminé !
           </h1>
           <p className="text-lg opacity-80">

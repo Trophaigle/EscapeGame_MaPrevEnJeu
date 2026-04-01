@@ -34,14 +34,14 @@ export default async function DashboardPage() {
 
   {/* Progression */}
   <section className="w-full max-w-3xl bg-white shadow-md rounded-lg p-6 mb-6">
-    <h2 className="text-xl text-black font-semibold mb-3">Votre progression</h2>
+    <h2 className="text-xl text-black font-semibold mb-3">Votre progression (si le joueur arrête en cours et veut reprendre)</h2>
     <div className="mb-4">
       <div className="w-full bg-gray-300 rounded-full h-4">
         <div className="bg-green-500 h-4 rounded-full" style={{ width: '40%' }} />
       </div>
       <p className="mt-2 text-gray-700">40% des missions terminées</p>
     </div>
-    <p className="text-gray-700">Score précédent : 0</p>
+    <p className="text-gray-700">Score précédent : 0 / Autre type de mesure ...</p>
   </section>
 
   {/* Modules disponibles */}
@@ -49,8 +49,10 @@ export default async function DashboardPage() {
     <h2 className="text-xl text-black font-semibold mb-3">Modules disponibles</h2>
     <div className="flex gap-4 flex-wrap">
       <div className="bg-green-500 text-white px-3 py-1 rounded-lg">Mission 1 ✅</div>
-      <div className="bg-gray-300 text-white px-3 py-1 rounded-lg opacity-50">Mission 2 🔒</div>
-      <div className="bg-gray-300 text-white px-3 py-1 rounded-lg opacity-50">Mission 3 🔒</div>
+      <div className="bg-green-500 text-white px-3 py-1 rounded-lg">Mission 2 ✅</div>
+      <div className="bg-green-500 text-white px-3 py-1 rounded-lg">Mission 3 ✅</div>
+      <div className="bg-gray-300 text-white px-3 py-1 rounded-lg opacity-50">Mission 4 🔒</div>
+      <div className="bg-gray-300 text-white px-3 py-1 rounded-lg opacity-50">Mission 5 🔒</div>
     </div>
   </section>
 

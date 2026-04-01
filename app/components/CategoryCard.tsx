@@ -56,6 +56,10 @@ const CategoryCard = ({title, subtitle ,onValidate, isNew, children} : CategoryC
       >
         Valider
       </button>
+
+      {/* <div className="text-sm text-gray-500 mt-2">
+        (Astuce : n'hésitez pas à utiliser les indices si vous êtes bloqué !)
+        </div> */}
     </div>
   )
 }

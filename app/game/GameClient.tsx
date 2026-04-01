@@ -18,10 +18,19 @@ export default function GameClient() {
   const [unlocked, setUnlocked] = useState([true, false, false, false, false]);
   const [newCardIndex, setNewCardIndex] = useState<number | null>(0); //0 pour avoir l'anim meme à la premiere card
 
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
   const [showChest, setShowChest] = useState(false);
   const handleChestAnimationEnd = () => {
     setShowChest(false);
   }
+
+  /* show motif toast */
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ message, type });
+    // disparition automatique après 3s
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const handleValidate = (
     index: number, 
@@ -39,7 +48,7 @@ export default function GameClient() {
 
   if (isLastCard) {
     // Redirection vers le dashboard
-    alert("🎉 Bravo ! Vous avez terminé l'Escape Game !");
+    //alert("🎉 Bravo ! Vous avez terminé l'Escape Game !");
     if(router == null) {
       alert("Router null, impossible de rediriger vers le dashboard");
     } else {
@@ -69,9 +78,9 @@ export default function GameClient() {
     onValidate: () => {
       const isValid = actorsRef.current?.validateAll?.();
       if (isValid) {
-        alert("Bravo ! Tous les acteurs sont correctement placés ✅");
+        showToast("Bravo ! Tous les acteurs sont correctement placés ✅"); // à la place des alert, on affiche une jolie notification toast en haut de l’écran qui disparaît après 3s
       } else {
-        alert("Il y a encore des erreurs ❌");
+        showToast("Il y a encore des erreurs ❌", "error");
       }
       return isValid; // retourne true ou false
     }
@@ -83,11 +92,11 @@ export default function GameClient() {
     onValidate: () => {
       const isValid = riddleRef.current?.validate?.();
       if (!isValid) {
-        alert("Ce n'est pas la bonne réponse ❌");
+        showToast("Ce n'est pas la bonne réponse ❌", "error");
         return false; // validation échouée, bloque la suite
       } 
       //if correct
-      alert("Bravo ! L'énigme est résolue ✅");
+      showToast("Bravo ! L'énigme est résolue ✅");
       // jouer l'animation du coffre si tu as un ref vers le ThreeJSChest
       setShowChest(true);
       return true; // validation réussie, continue vers la suite
@@ -109,7 +118,7 @@ export default function GameClient() {
     component: <MysterySentence />,
     onValidate: () => {
       const isValid = true; // mettre la vraie logique de validation
-      alert(isValid ? "✅ Mission validée !" : "❌ Erreur");
+      showToast(isValid ? "✅ Mission validée !" : "❌ Erreur");
       return isValid;
     }
   }
@@ -117,10 +126,20 @@ export default function GameClient() {
   
 
   return (
+
+    
     /* Si unlocked[i] est true → on affiche le <div>
     Si unlocked[i] est false → on ne rend rien pour cette catégorie*/
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex flex-col items-center pt-20 pb-20 space-y-10">
       
+      {/* Toast notification */}
+      {toast && (
+        <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg text-white z-50
+        ${toast.type === "success" ? "bg-green-500" : "bg-red-500"} transition-all duration-300`}>
+        {toast.message}
+      </div>
+      )}
+
       {categories.map((cat, i) => (
         unlocked[i] && (
           <CategoryCard 

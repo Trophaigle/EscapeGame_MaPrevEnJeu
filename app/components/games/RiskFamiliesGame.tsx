@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { families } from '@/data/family';
 
 const RiskFamiliesGame = () => {
