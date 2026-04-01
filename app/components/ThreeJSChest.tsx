@@ -9,7 +9,7 @@ type ChestProps = {
   onAnimationEnd?: () => void;
 };
 
-export default function ThreeJSChest({ duration = 10,onAnimationEnd }: ChestProps) {
+export default function ThreeJSChest({ duration = 8, onAnimationEnd }: ChestProps) {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -43,7 +43,7 @@ export default function GameClient() {
     if(router == null) {
       alert("Router null, impossible de rediriger vers le dashboard");
     } else {
-       router.push("/dashboard"); // ← redirige vers la page dashboard
+       router.push("/end"); // ← redirige vers la page dashboard
     }
     
     return; // stoppe ici
