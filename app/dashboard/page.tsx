@@ -51,7 +51,7 @@ export default async function DashboardPage() {
       <div className="bg-green-500 text-white px-3 py-1 rounded-lg">Mission 1 ✅</div>
       <div className="bg-green-500 text-white px-3 py-1 rounded-lg">Mission 2 ✅</div>
       <div className="bg-green-500 text-white px-3 py-1 rounded-lg">Mission 3 ✅</div>
-      <div className="bg-gray-300 text-white px-3 py-1 rounded-lg opacity-50">Mission 4 🔒</div>
+     <div className="bg-green-500 text-white px-3 py-1 rounded-lg">Mission 4 ✅</div>
       <div className="bg-gray-300 text-white px-3 py-1 rounded-lg opacity-50">Mission 5 🔒</div>
     </div>
   </section>
