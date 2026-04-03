@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { families, Family } from '@/data/family'
 import { DndContext, DragEndEvent, PointerSensor, TouchSensor, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core'
-import { a } from 'framer-motion/client';
 
 type Matches = Record<string, string>; // ex: { zone1: "chemicals", zone2: "fire" } => zone1 doit recevoir l’item avec id "chemicals" pour être validé
 
