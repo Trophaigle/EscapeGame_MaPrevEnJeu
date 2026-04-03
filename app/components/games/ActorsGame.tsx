@@ -3,7 +3,7 @@
 import React from 'react'
 import { useState } from 'react';
 import actors from "@/data/actors.json"; // Assurez-vous que ce chemin est correct et que le fichier JSON est bien structuré
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { useDraggable } from '@dnd-kit/core';
 import { useDroppable } from '@dnd-kit/core';
 
@@ -115,8 +115,13 @@ const ActorsGame = ({ refObj }: ActorsGameProps) => {
     }
   };
 
+  const pointerSensor = useSensor(PointerSensor);
+  const touchSensor = useSensor(TouchSensor);
+  
+  const sensors = useSensors(pointerSensor, touchSensor); //add mobile support (touch)
+
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
     <div className="w-full flex flex-col items-center gap-8">
       
       {/* 🎴 Acteurs */}

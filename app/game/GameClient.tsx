@@ -69,12 +69,13 @@ export default function GameClient() {
 
   const actorsRef = useRef<any>(null); // pour pouvoir appeler la validation du jeu des acteurs depuis la page principale
   const riddleRef = useRef<any>(null);
+  const workingPlaceRef = useRef<any>(null);
 
   const categories = [
   {
     title: 'Mission 1 : Les héros de la prévention 🦸‍♂️',
     subtitle: 'Repérez tous les acteurs de la prévention des risques professionnels et associez-les à leurs rôles et missions ! »',
-    component: <ActorsGameNoSSR refObj={actorsRef} />, // ✅ client-only
+    component: <ActorsGameNoSSR refObj={actorsRef} />,
     onValidate: () => {
       const isValid = actorsRef.current?.validateAll?.();
       if (isValid) {
@@ -110,7 +111,16 @@ export default function GameClient() {
   {
     title: 'Mission 4 : Détective du risque 🔎',
     subtitle: "Observez cette scène de travail (par exemple dans un restaurant).\n Votre mission (si vous l'acceptez): associer chaque personne au risque principal auquel elle est exposée.\n Saurez-vous repérer tous les dangers avant que quelque chose n’arrive ?",
-    component: <WorkingPlaceRisks />
+    component: <WorkingPlaceRisks refObj={workingPlaceRef}/>,
+    onValidate: () => {
+      const isValid = workingPlaceRef.current?.validateAll?.();
+      if (isValid) {
+        showToast("Bravo ! Tous les risques sont correctement placés ✅");
+      } else {
+        showToast("Il y a encore des erreurs ❌", "error");
+      }
+      return isValid;
+    }
   },
   {
     title: 'Mission 5 : Maîtrisez les risques ⚡',
