@@ -28,7 +28,8 @@ Users must complete each stage to unlock the next, simulating a **guided escape 
 - **Framework:** Next.js  
 - **Styling:** Tailwind CSS  
 - **Authentication:** NextAuth.js (restricted access via invitation codes)  
-- **Drag & Drop System:** dnd-kit  
+- **Drag & Drop System:** dnd-kit
+- **Animation System:** three.js
 - **State & Gameplay Logic:** Custom GameManager architecture  
 - **Architecture:** Component-based modular design  
 
