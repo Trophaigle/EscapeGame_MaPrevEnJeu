@@ -17,38 +17,60 @@ export default function GameClient() {
 
   const [unlocked, setUnlocked] = useState<boolean[]>([]);
   const API_URL = "http://127.0.0.1:8000"; //comm avec FastAPI
- const loadProgress = async () => {
-      const response = await fetch(`${API_URL}/progress/1`);
+ 
+    const ROOM_COUNT = 5;
 
-      const data = await response.json();
+    const loadProgress = async () => {
+      try {
+        const response = await fetch(`${API_URL}/game-state`);
 
-      console.log("Progression reçue :", data);
+        if (!response.ok) {
+          throw new Error("Impossible de récupérer la progression");
+        }
 
-      setUnlocked(data.unlocked);
-    };
+        const data = await response.json();
 
-  useEffect(() => { // useEffect pour charger la progression de l'utilisateur au montage du composant
-    loadProgress(); // Appel à l'API pour récupérer la progression de l'utilisateur
-  }, []);
+        console.log("Room actuelle :", data.current_room);
 
-  const saveProgress = async (newUnlocked: boolean[]) => {
-      const response = await fetch(`${API_URL}/progress/1`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          unlocked: newUnlocked,
-        }),
-      });
+        // On reconstruit le tableau unlocked à partir de current_room
+        const newUnlocked = Array(ROOM_COUNT).fill(false);
 
-      if (!response.ok) {
-        console.error("Erreur sauvegarde :", await response.text());
-        return;
+        for (let i = 0; i < data.current_room; i++) {
+          newUnlocked[i] = true;
+        }
+
+        setUnlocked(newUnlocked);
+
+      } catch (error) {
+        console.error("Erreur chargement progression :", error);
       }
-
-      console.log("Progression sauvegardée !");
     };
+
+    useEffect(() => {
+      loadProgress();
+    }, []);
+
+    const saveRoom = async (room: number) => {
+      try {
+        const response = await fetch(
+          `${API_URL}/game-state/room?room=${room}`,
+          {
+            method: "PUT",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Erreur lors de la sauvegarde de la room");
+        }
+
+        const data = await response.json();
+
+        console.log("Nouvelle room sauvegardée :", data.current_room);
+
+      } catch (error) {
+        console.error("Erreur sauvegarde :", error);
+      }
+};
 
   const [newCardIndex, setNewCardIndex] = useState<number | null>(0); //0 pour avoir l'anim meme à la premiere card
 
@@ -66,41 +88,41 @@ export default function GameClient() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const handleValidate = async (
-    index: number, 
-    onValidate?: () => boolean | void
-  ) => {
-        // Si une action personnalisée est définie, on l'exécute
-        if (onValidate) {
-          const isValid = onValidate(); // onValidate doit retourner true ou false
+      const handleValidate = async (
+      index: number,
+      onValidate?: () => boolean | void
+    ) => {
 
-          if(!isValid) return; // si validation échoue, on bloque la suite et n'affiche pas la nouvelle carte
+      // Vérifie que la mission est correctement réalisée
+      if (onValidate) {
+        const isValid = onValidate();
+
+        if (!isValid) {
+          return;
         }
+      }
 
-        // Vérifier si c’est la dernière carte
+      // Si c'est la dernière mission
       const isLastCard = index === unlocked.length - 1;
 
       if (isLastCard) {
-        // Redirection vers le dashboard
-        //alert("🎉 Bravo ! Vous avez terminé l'Escape Game !");
-        if(router == null) {
-          alert("Router null, impossible de rediriger vers le dashboard");
-        } else {
-          router.push("/end"); // ← redirige vers la page dashboard
-        }
-        
-        return; // stoppe ici
+        router.push("/end");
+        return;
       }
 
-        // Débloquer la carte suivante si tout est OK
-        const newUnlocked = [...unlocked]; //copie tableau, necessaire pour que React détecte chgt et déclenche re-render.
-        if (index + 1 < unlocked.length) { //verification limite
-          newUnlocked[index + 1] = true; // débloque la catégorie suivante, React re-render la page avec la nouvelle version de unlocked
-          setNewCardIndex(index + 1); // pour l'animation de la nouvelle carte, la nouvelle carte devient “nouvelle”
-        }
-        setUnlocked(newUnlocked);
-        await saveProgress(newUnlocked); // sauvegarde la progression sur le serveur
-  };
+      // Débloque la mission suivante dans React
+      const newUnlocked = [...unlocked];
+
+      newUnlocked[index + 1] = true;
+
+      setUnlocked(newUnlocked);
+      setNewCardIndex(index + 1);
+
+      // Sauvegarde la prochaine room dans PostgreSQL
+      const nextRoom = index + 2; // +2 car index commence à 0 et room commence à 1
+
+      await saveRoom(nextRoom);
+    };
 
   const actorsRef = useRef<any>(null); // pour pouvoir appeler la validation du jeu des acteurs depuis la page principale
   const riddleRef = useRef<any>(null);
