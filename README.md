@@ -143,10 +143,11 @@ Next.js / React
 
 PostgreSQL is used to store the main game progression.
 The current game state is stored in a simple structure containing:
-
+```
 game_state
 ├── id
 └── current_room
+```
 
 This allows the player's progression to persist when the page is refreshed.
 
@@ -182,7 +183,7 @@ The platform is designed with a strong focus on:
 The goal is to maintain a serious training purpose wrapped in an engaging experience.
 
 ## 🧱 Architecture
-
+```
 /app or /pages     → Next.js routing and pages
 /components        → UI components (game, dashboard, UI elements)
 /components/games  → Individual interactive game mechanics
@@ -195,3 +196,4 @@ The goal is to maintain a serious training purpose wrapped in an engaging experi
 ├── api            → FastAPI REST API endpoints
 ├── database       → Database configuration & models
 └── main.py        → FastAPI application entry point
+```
