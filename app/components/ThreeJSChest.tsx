@@ -101,7 +101,8 @@ export default function ThreeJSChest({ duration = 8, onAnimationEnd }: ChestProp
     });
 
     function animate() {
-       requestAnimationFrame(animate);
+      console.log("Animation started");
+      requestAnimationFrame(animate);
 
       const delta = clock.getDelta();
       elapsedTime += delta;

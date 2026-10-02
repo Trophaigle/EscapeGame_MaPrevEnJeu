@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import CategoryCard from '../components/CategoryCard';
 import ThreeJSChest from '../components/ThreeJSChest';
 import MysterySentence from '../components/games/MysterySentence';
@@ -15,7 +15,41 @@ const ActorsGameNoSSR = dynamic(() => import("../components/games/ActorsGame"), 
 export default function GameClient() {
   const router = useRouter();
 
-  const [unlocked, setUnlocked] = useState([true, false, false, false, false]);
+  const [unlocked, setUnlocked] = useState<boolean[]>([]);
+  const API_URL = "http://127.0.0.1:8000"; //comm avec FastAPI
+ const loadProgress = async () => {
+      const response = await fetch(`${API_URL}/progress/1`);
+
+      const data = await response.json();
+
+      console.log("Progression reçue :", data);
+
+      setUnlocked(data.unlocked);
+    };
+
+  useEffect(() => { // useEffect pour charger la progression de l'utilisateur au montage du composant
+    loadProgress(); // Appel à l'API pour récupérer la progression de l'utilisateur
+  }, []);
+
+  const saveProgress = async (newUnlocked: boolean[]) => {
+      const response = await fetch(`${API_URL}/progress/1`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          unlocked: newUnlocked,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Erreur sauvegarde :", await response.text());
+        return;
+      }
+
+      console.log("Progression sauvegardée !");
+    };
+
   const [newCardIndex, setNewCardIndex] = useState<number | null>(0); //0 pour avoir l'anim meme à la premiere card
 
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
@@ -32,39 +66,40 @@ export default function GameClient() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const handleValidate = (
+  const handleValidate = async (
     index: number, 
     onValidate?: () => boolean | void
   ) => {
-     // Si une action personnalisée est définie, on l'exécute
-    if (onValidate) {
-      const isValid = onValidate(); // onValidate doit retourner true ou false
+        // Si une action personnalisée est définie, on l'exécute
+        if (onValidate) {
+          const isValid = onValidate(); // onValidate doit retourner true ou false
 
-      if(!isValid) return; // si validation échoue, on bloque la suite et n'affiche pas la nouvelle carte
-    }
+          if(!isValid) return; // si validation échoue, on bloque la suite et n'affiche pas la nouvelle carte
+        }
 
-    // Vérifier si c’est la dernière carte
-  const isLastCard = index === unlocked.length - 1;
+        // Vérifier si c’est la dernière carte
+      const isLastCard = index === unlocked.length - 1;
 
-  if (isLastCard) {
-    // Redirection vers le dashboard
-    //alert("🎉 Bravo ! Vous avez terminé l'Escape Game !");
-    if(router == null) {
-      alert("Router null, impossible de rediriger vers le dashboard");
-    } else {
-       router.push("/end"); // ← redirige vers la page dashboard
-    }
-    
-    return; // stoppe ici
-  }
+      if (isLastCard) {
+        // Redirection vers le dashboard
+        //alert("🎉 Bravo ! Vous avez terminé l'Escape Game !");
+        if(router == null) {
+          alert("Router null, impossible de rediriger vers le dashboard");
+        } else {
+          router.push("/end"); // ← redirige vers la page dashboard
+        }
+        
+        return; // stoppe ici
+      }
 
-    // Débloquer la carte suivante si tout est OK
-    const newUnlocked = [...unlocked]; //copie tableau, necessaire pour que React détecte chgt et déclenche re-render.
-    if (index + 1 < unlocked.length) { //verification limite
-      newUnlocked[index + 1] = true; // débloque la catégorie suivante, React re-render la page avec la nouvelle version de unlocked
-      setNewCardIndex(index + 1); // pour l'animation de la nouvelle carte, la nouvelle carte devient “nouvelle”
-    }
-    setUnlocked(newUnlocked);
+        // Débloquer la carte suivante si tout est OK
+        const newUnlocked = [...unlocked]; //copie tableau, necessaire pour que React détecte chgt et déclenche re-render.
+        if (index + 1 < unlocked.length) { //verification limite
+          newUnlocked[index + 1] = true; // débloque la catégorie suivante, React re-render la page avec la nouvelle version de unlocked
+          setNewCardIndex(index + 1); // pour l'animation de la nouvelle carte, la nouvelle carte devient “nouvelle”
+        }
+        setUnlocked(newUnlocked);
+        await saveProgress(newUnlocked); // sauvegarde la progression sur le serveur
   };
 
   const actorsRef = useRef<any>(null); // pour pouvoir appeler la validation du jeu des acteurs depuis la page principale

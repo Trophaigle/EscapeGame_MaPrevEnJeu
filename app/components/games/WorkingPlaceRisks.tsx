@@ -163,7 +163,6 @@ const WorkingPlaceRisks = ({ refObj }: WorkingPlaceRisksProps) => {
     )
 }
 
-
 type FamilyCardProps = {
   family: Family;
 };
