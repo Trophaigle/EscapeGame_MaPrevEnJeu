@@ -125,7 +125,7 @@ Main endpoints currently include:
 GET  /game-state
 PUT  /game-state/room
 ```
-
+```
 Next.js / React
        │
        │ HTTP requests
@@ -135,6 +135,7 @@ Next.js / React
        ├──────────────► PostgreSQL
        │
        └──────────────► MongoDB
+```
 
 ## 🗄️ Database System
 
