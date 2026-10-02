@@ -121,9 +121,10 @@ The API is responsible for:
 - Connecting the application to the databases
 
 Main endpoints currently include:
-
+```
 GET  /game-state
 PUT  /game-state/room
+```
 
 Next.js / React
        │
