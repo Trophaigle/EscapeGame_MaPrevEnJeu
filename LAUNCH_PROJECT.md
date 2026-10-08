@@ -1,0 +1,106 @@
+## 1. 🗄️ PostgreSQL
+
+Open **pgAdmin** and make sure PostgreSQL is running.
+
+Database:
+
+```text
+escape_game
+```
+
+---
+
+## 2. 🐍 FastAPI Backend
+
+### Terminal 1
+
+From the project root:
+
+```bash
+cd backend
+uvicorn main:app --reload
+```
+
+Backend:
+
+```text
+http://127.0.0.1:8000
+```
+
+Swagger:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## 3. ⚛️ Next.js Frontend
+
+### Terminal 2
+
+Go back to the project root:
+
+```bash
+cd ..
+npm run dev
+```
+
+Frontend:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## ✅ Launch Order
+
+```text
+1. Open pgAdmin
+        ↓
+2. Terminal 1
+   cd backend
+   uvicorn main:app --reload
+        ↓
+3. Terminal 2
+   cd ..
+   npm run dev
+        ↓
+4. Open http://localhost:3000
+```
+
+---
+
+## 🔎 Quick Backend Test
+
+Open Swagger:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+Test:
+
+```text
+GET /game-state
+```
+
+Expected response:
+
+```json
+{
+  "current_room": 1
+}
+```
+
+---
+
+## 🛑 Stop the Project
+
+In each terminal:
+
+```text
+Ctrl + C
+```
+"""
