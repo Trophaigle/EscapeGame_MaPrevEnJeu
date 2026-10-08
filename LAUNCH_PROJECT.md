@@ -104,3 +104,27 @@ In each terminal:
 Ctrl + C
 ```
 """
+
+## 🧪 Tests
+
+The backend tests are located in:
+
+```text
+backend/tests/
+```
+
+# Run All Tests
+Open a terminal from the project root and navigate to the backend directory:
+```text
+cd backend
+```
+Then run
+```text
+python -m pytest
+```
+
+To display the name and status of each test run:
+```text
+python -m pytest -v
+```
+
